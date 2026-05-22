@@ -1,6 +1,7 @@
 <?php
 require_once 'utilidades.php';
 require_once 'poo.php';
+require_once 'conexion.php';
 /**
  * primera parte: funciones utilitarias comunes
  * @var mixed
@@ -27,6 +28,9 @@ $cuenta->retirar(100);
 $cuenta->retirar(2000); // Intento de retiro que excede el saldo
 $cuenta->depositar(50);
 $historial_cuenta = $cuenta->getHistorialTransacciones();
+/*conexion a base de datos*/
+$consulta = $conexion->query("SELECT * FROM articulos order by fecha_creacion desc");
+$articulos = $consulta->fetchAll(PDO::FETCH_ASSOC);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -40,12 +44,34 @@ $historial_cuenta = $cuenta->getHistorialTransacciones();
 
 <body>
     <div class="container">
-        <header>
-            <h1>PHP Medio</h1>
+        <header class="header-flex">
+            <h2>Artículos Recientes</h2>
+            <a href="crear.php" class="btn btn-primary"> + Crear Nuevo Artículo</a>
         </header>
-        <h2>Parte 1: Lógica PHP Reutilizable</h2>
+        <div class="articulos-listado">
+            <?php if (count($articulos) > 0): ?>
+                <?php foreach ($articulos as $articulo): ?>
+                    <div class="articulo-card">
+                        <h3><?php echo sanitizar_entrada($articulo['titulo']); ?></h3>
+                        <p><?php echo sanitizar_entrada($articulo['contenido']); ?></p>
+                        <div class="articulo-card-footer">
+                            <small>Publicado el: <?php echo formatear_fecha($articulo['fecha_creacion']); ?>
+                                <?php echo calcular_tiempo_hace($articulo['fecha_creacion']); ?></small>
+                        </div>
+                        <div class="articulo-card-actions">
+                            <a href="editar.php?id=<?php echo $articulo['id']; ?>" class="btn btn-primary">Editar</a>
+                            <a href="borrar.php?id=<?php echo $articulo['id']; ?>" class="btn btn-secondary"
+                                onclick="return confirm('¿Estás seguro de que deseas eliminar este artículo?');">Eliminar</a>
+                        </div>
+                    </div>
+                <?php endforeach; ?>
+            <?php else: ?>
+                <p>No hay artículos disponibles.</p>
+            <?php endif; ?>
+        </div>
+        <!-- <h2>Parte 1: Lógica PHP Reutilizable</h2> -->
         <!-- primera funcion  Sonitización de codigo-->
-        <div class="function-demo">
+        <!-- <div class="function-demo">
             <h3>Función de Sanitización de Código</h3>
             <p>Esta función toma una cadena de entrada y la sanitiza para prevenir ataques de inyección de código. Es
                 útil para limpiar datos antes de mostrarlos en una página web.</p>
@@ -57,9 +83,9 @@ $historial_cuenta = $cuenta->getHistorialTransacciones();
                 <p><strong>Entrada Sucia:</strong> <?php echo $datos_sucios_xss; ?></p>
                 <p><strong>Salida Sanitizada:</strong> <?php echo sanitizar_entrada($datos_sucios_xss); ?></p>
             </div>
-        </div>
+        </div> -->
         <!-- Segunda funcion -->
-        <div class="function-demo">
+        <!-- <div class="function-demo">
             <h3>Formatear fechas</h3>
             <p>Esta función toma una fecha del sistema y la muestra con el nombre del mes en español</p>
             <div class="code-box">
@@ -70,9 +96,9 @@ $historial_cuenta = $cuenta->getHistorialTransacciones();
                 <p><strong>Fecha Actual:</strong> <?php echo $fecha_hoy; ?></p>
                 <p><strong>Fecha Formateada:</strong> <?php echo formatear_fecha($fecha_hoy); ?></p>
             </div>
-        </div>
+        </div> -->
         <!-- tercer funcion -->
-        <div class="function-demo">
+        <!-- <div class="function-demo">
             <h3>Calculo de tiempo</h3>
             <p>Esta función  calcula el tiempor transcurrido de una fecha pasada hatas el momento actual</p>
             <div class="code-box">
@@ -83,9 +109,9 @@ $historial_cuenta = $cuenta->getHistorialTransacciones();
                 <p><strong>Calculo Fech Pasada:</strong> <?php echo calcular_tiempo_hace($fecha_hace_horas); ?></p>
                 <p><strong>Calculo Fech Pasada (5 días):</strong> <?php echo calcular_tiempo_hace($fecha_hace_dias); ?></p>
             </div>
-        </div>
+        </div> -->
         <!-- cuarta funcion -->
-        <div class="function-demo">
+        <!-- <div class="function-demo">
             <h3>Esta funcion dara el formato de dinero a un numero de decimal simple</h3>
             <p>Esta función  calcula el tiempor transcurrido de una fecha pasada hatas el momento actual</p>
             <div class="code-box">
@@ -96,9 +122,9 @@ $historial_cuenta = $cuenta->getHistorialTransacciones();
                 <p><strong>Entrada:</strong> <?php echo $monto; ?></p>
                 <p><strong>Salida Formateada:</strong> <?php echo formatear_moneda($monto); ?></p>
             </div>
-        </div>
+        </div> -->
         <!-- quinta funcion -->
-        <div class="function-demo">
+        <!-- <div class="function-demo">
             <h3>Limpiar texto para URL</h3>
             <p>Esta función Limpia un texto y lo prepara para poder usarlo de forma segura en un enlace o URL</p>
             <div class="code-box">
@@ -110,9 +136,9 @@ $historial_cuenta = $cuenta->getHistorialTransacciones();
                 <p><strong>Salida Formateada:</strong> <?php echo generar_slug($titulo_articulo); ?></p>
             </div>
         </div>
-        <h2>Parte 2: Programación Orientada a Objetos POO</h2>
+        <h2>Parte 2: Programación Orientada a Objetos POO</h2> -->
         <!-- Ejercicio con poo 1 -->
-        <div class="function-demo">
+        <!-- <div class="function-demo">
             <h3>Calculadora</h3>
             <p>Clases queque mantienen un resultado interno y permite encadenamiento de métodos.</p>
             <div class="code-box">
@@ -122,9 +148,9 @@ $historial_cuenta = $cuenta->getHistorialTransacciones();
             <div class="result-box">
                 <p><strong>Resultado Final:</strong> <?php echo $resultado; ?></p>
             </div>
-        </div>
+        </div> -->
         <!-- Ejercicio con poo 2 -->
-        <div class="function-demo">
+        <!-- <div class="function-demo">
             <h3>Herencia y Polimorfismo </h3>
             <p>Empleados y Gerentes</p>
             <div class="code-box">
@@ -136,9 +162,9 @@ $historial_cuenta = $cuenta->getHistorialTransacciones();
                 <p><strong>Detalles del Empleado:</strong> <?php echo $empleado1->obtenerDetalles(); ?></p>
                 <p><strong>Detalles del Gerente:</strong> <?php echo $gerente1->obtenerDetalles(); ?></p>
             </div>
-        </div>
+        </div> -->
         <!-- Ejercicio con poo 3 -->
-        <div class="function-demo">
+        <!-- <div class="function-demo">
             <h3>Cuentas Bancarias(Encapsulacion e Historial) </h3>
             <p>Uso de propiedades e historial interno de transacciones</p>
             <div class="code-box">
@@ -161,7 +187,7 @@ $historial_cuenta = $cuenta->getHistorialTransacciones();
                         <th>Fecha</th>
                         <th>Saldo Restante</th>
                     </tr>
-                    <?php foreach ($historial_cuenta as $transaccion) : ?>
+                    <?php foreach ($historial_cuenta as $transaccion): ?>
                         <tr>
                             <td><?php echo $transaccion['tipo']; ?></td>
                             <td><?php echo formatear_moneda($transaccion['monto']); ?></td>
@@ -171,7 +197,7 @@ $historial_cuenta = $cuenta->getHistorialTransacciones();
                     <?php endforeach; ?>
                 </table>
             </div>
-        </div>
+        </div> -->
     </div>
 </body>
 
